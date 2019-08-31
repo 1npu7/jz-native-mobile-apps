@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="digital_pass_info_header">Visit All The Partners Game</string>
     <string name="digital_pass_rules_title">Rules</string>
-    <string name="digital_pass_rules">Visit the partner stands and scan their QR-code to get their logo highlighted in the app. Go to the javaBin Lounge after visiting all the stands and show your QR-code to get added to the prize draw. If you are among the lucky winners; you will hear from us shortly after the conference. Happy hunting!</string>
+    <string name="digital_pass_rules">1. Visit all partner stands and scan their QR-codes. Each stand should have one, ask if they are not visible.\n
+2. When you have got a green checkmark on all logos, visit the javaBin Lounge in the expo area.\n
+3. Show your badge, and register your contact information to participate in a prize draw.</string>
     <string name="digital_pass_prizes_title">Prizes</string>
-    <string name="digital_pass_prizes">T</string>
+    <string name="digital_pass_prizes">The prizes will be drawn shortly after the conference. If you are among the lucky winners; you will hear from us shortly after the conference.</string>
+    <string name="digital_pass_notice_title">Notice</string>
+    <string name="digital_pass_notice_gdpr">General Data Protection Regulation (GDPR)</string>
+    <string name="digital_pass_notice">JavaZone team would like to remind attendees that by allowing a partner to scan your badge, you are agreeing to share your contact information with them.\n\n
+All data will be stored locally on the device and no data will be collected or shared with third parties.</string>
 </resources>

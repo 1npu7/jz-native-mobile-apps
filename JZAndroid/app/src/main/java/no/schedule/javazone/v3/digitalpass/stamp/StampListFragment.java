@@ -104,6 +104,7 @@ public class StampListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CameraActivity.PARTNER_SCAN) {
             if (resultCode == Activity.RESULT_OK) {
+                Log.d("barcode", data.getDataString());
                 String barcode = data.getStringExtra("code");
 
                 String salt = FirebaseRemoteConfig.getInstance().getString(getContext().getString(R.string.salt_key));

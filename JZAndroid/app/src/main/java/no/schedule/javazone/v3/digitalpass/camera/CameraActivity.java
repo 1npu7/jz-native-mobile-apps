@@ -8,11 +8,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 
 import java.io.IOException;
 
 import no.schedule.javazone.v3.R;
+import no.schedule.javazone.v3.digitalpass.StampQrCode;
 import no.schedule.javazone.v3.digitalpass.pass.PassFragment;
 import no.schedule.javazone.v3.ui.BaseActivity;
 
@@ -93,6 +95,16 @@ public class CameraActivity extends BaseActivity {
     public void onPartnerScan(String code){
         Intent resultIntent = new Intent();
         resultIntent.putExtra("requestCode", requestCode);
+
+        StampQrCode stampQrCode = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            stampQrCode =  mapper.readValue(), StampQrCode.class);
+        }
+        catch (JsonGenerationException e){
+            e.printStackTrace();
+        }
+
         resultIntent.putExtra("code", code);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();

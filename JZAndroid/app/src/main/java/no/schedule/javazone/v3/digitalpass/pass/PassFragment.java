@@ -188,6 +188,8 @@ public class PassFragment extends Fragment{
         ImageView myImage = getView().findViewById(R.id.my_qr);
         myImage.setImageDrawable(getResources().getDrawable(R.drawable.qr_code));
         final Button button = getView().findViewById(R.id.scan_button);
+        TextView name = getView().findViewById(R.id.vcard_name);
+        name.setText("");
         ((DigitalPassActivity) getActivity()).setRegistered(false);
         button.setText("Scan QR Code");
         button.setOnClickListener(new View.OnClickListener() {

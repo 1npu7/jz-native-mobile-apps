@@ -214,6 +214,7 @@ dependencies {
     implementation 'com.opencsv:opencsv:3.9'
 
     implementation 'com.caverock:androidsvg:1.2.1'
+    implementation 'org.codehouse.jackson:jackson-mapper-asl:1.9.13'
 
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.hamcrest:hamcrest-core:1.3'

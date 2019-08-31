@@ -141,7 +141,7 @@ public class StampDialogFragment extends DialogFragment {
                     Log.d("StampDialogFragment", e.getMessage());
                     return;
                 }
-
+                Log.d("barcode", data.getDataString());
                 String barcode = data.getStringExtra("code");
                 Log.d("barcode", barcode);
                 Log.d("verification", verificationKey);
