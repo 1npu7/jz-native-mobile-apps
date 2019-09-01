@@ -134,8 +134,10 @@ public class StampDialogFragment extends DialogFragment {
                 String verificationKey;
 
                 String salt = FirebaseRemoteConfig.getInstance().getString(getContext().getString(R.string.salt_key));
+                Log.d("salt", salt);
 
                 try {
+                    Log.d("stampname", stamp.getName());
                     verificationKey = stamp.generateVerificationKey(salt);
                 } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                     Log.d("StampDialogFragment", e.getMessage());

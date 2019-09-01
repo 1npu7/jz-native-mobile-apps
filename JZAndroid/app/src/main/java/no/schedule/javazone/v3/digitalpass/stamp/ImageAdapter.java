@@ -1,6 +1,7 @@
 package no.schedule.javazone.v3.digitalpass.stamp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 
 import android.graphics.ColorFilter;
@@ -27,8 +28,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 import no.schedule.javazone.v3.R;
@@ -52,6 +56,19 @@ public class ImageAdapter extends BaseAdapter {
                     Log.d("ImageAdapter", "LogoUrl_png " + stamp.getLogoUrl_png());
                     Log.d("ImageAdapter", "LogoUrl " + stamp.getLogoUrl());
                     mStamps.add(stamp);
+                    SharedPreferences sharedPref = mContext.getSharedPreferences("StampPref", Context.MODE_PRIVATE);
+                    String savedCode = sharedPref.getString(stamp.getName(), null);
+
+                    String salt = FirebaseRemoteConfig.getInstance().getString("salt");
+                    try {
+                        if (savedCode != null && stamp.generateVerificationKey(salt).equals(savedCode)) {
+                            stamp.setTagged(true);
+                        }
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeySpecException e) {
+                        e.printStackTrace();
+                    }
                     Log.d("ImageAdapter", "Stamp count: " + mStamps.size());
                 }
                 notifyDataSetChanged();

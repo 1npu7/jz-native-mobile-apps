@@ -114,6 +114,7 @@ public class StampListFragment extends Fragment {
 
                     String verificationKey;
                     try{
+                        Log.d("stampname", stamp.getName());
                         verificationKey = stamp.generateVerificationKey(salt);
                     }catch( NoSuchAlgorithmException | InvalidKeySpecException e){
                         Log.d("StampDialogFragment", e.getMessage());

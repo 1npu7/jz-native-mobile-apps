@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.scheme.VCard;
@@ -167,8 +168,10 @@ public class PassFragment extends Fragment {
                     //if code is in sharedpreference
                     SharedPreferences sharedPref = mContext.getSharedPreferences("StampPref", Context.MODE_PRIVATE);
                     String savedCode = sharedPref.getString(stamp.getName(), null);
+
+                    String salt = FirebaseRemoteConfig.getInstance().getString(getContext().getString(R.string.salt_key));
                     try {
-                        if (savedCode != null && stamp.generateVerificationKey("tQMHgyouAYrOPACRDcEC").equals(savedCode)) {
+                        if (savedCode != null && stamp.generateVerificationKey(salt).equals(savedCode)) {
                             counts[1] += 1;
                         }
                     } catch (NoSuchAlgorithmException e) {
