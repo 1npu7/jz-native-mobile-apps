@@ -8,13 +8,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
 import no.schedule.javazone.v3.R;
-import no.schedule.javazone.v3.digitalpass.StampQrCode;
 import no.schedule.javazone.v3.digitalpass.pass.PassFragment;
 import no.schedule.javazone.v3.ui.BaseActivity;
 
@@ -96,34 +97,40 @@ public class CameraActivity extends BaseActivity {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("requestCode", requestCode);
 
-        StampQrCode stampQrCode = null;
-        ObjectMapper mapper = new ObjectMapper();
+        String key = "", name = "";
+
         try{
-            stampQrCode =  mapper.readValue(), StampQrCode.class);
+            JSONObject stampQrCode = new JSONObject(code);
+            key = stampQrCode.getString("Key");
+            name = stampQrCode.getString("Name");
         }
-        catch (JsonGenerationException e){
+        catch (JSONException e){
+            Log.d("StampQrCode", e.getMessage());
+
             e.printStackTrace();
         }
 
-        resultIntent.putExtra("code", code);
+        Log.d("StampQrCode", key);
+        Log.d("StampQrCode", name);
+
+        resultIntent.putExtra("code", key);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 
     public void onQrScanned(FirebaseVisionBarcode.ContactInfo contactInfo){
         Intent resultIntent = new Intent();
+
+        if(contactInfo == null || contactInfo.getEmails().isEmpty() || contactInfo.getName() == null){
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+            return;
+        }
+
         resultIntent.putExtra("requestCode", requestCode);
-        //switch (requestCode){
-        //    case BARCODE_REQUEST:
-        //        resultIntent.putExtra("barcode", )
-        //}
-        //extras.putSerializable("contactInfo", contactInfo);
         resultIntent.putExtra("name", contactInfo.getName().getFormattedName());
         resultIntent.putExtra("email", contactInfo.getEmails().get(0).getAddress());
-        //resultIntent.putExtra("address", contactInfo.getAddresses().get(0).getAddressLines());
-        //resultIntent.putExtra("company", contactInfo.getOrganization());
-        //resultIntent.putExtra("phone", contactInfo.getPhones().get(0).getNumber());
-        //resultIntent.putExtra("url", contactInfo.getUrls()[0]);
+
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }

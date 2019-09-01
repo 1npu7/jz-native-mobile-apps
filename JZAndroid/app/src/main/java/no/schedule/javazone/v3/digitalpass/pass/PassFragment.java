@@ -27,17 +27,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.opencsv.CSVReader;
 
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.scheme.VCard;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import no.schedule.javazone.v3.R;
 import no.schedule.javazone.v3.digitalpass.DigitalPassActivity;
@@ -46,7 +41,7 @@ import no.schedule.javazone.v3.digitalpass.stamp.Stamp;
 
 import static no.schedule.javazone.v3.util.LogUtils.makeLogTag;
 
-public class PassFragment extends Fragment{
+public class PassFragment extends Fragment {
 
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -75,7 +70,7 @@ public class PassFragment extends Fragment{
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String name = sharedPref.getString("name", null);
 
-        if (name != null){
+        if (name != null) {
             VCard contactInfo = new VCard(name)
                     .setEmail(sharedPref.getString("email", null))
                     .setAddress(sharedPref.getString("address", null))
@@ -92,12 +87,12 @@ public class PassFragment extends Fragment{
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         getStampProgress();
     }
 
-    public void setProgressText(){
+    public void setProgressText() {
         pb.setMax(counts[0]);
         pb.setProgress(counts[1]);
 
@@ -105,7 +100,7 @@ public class PassFragment extends Fragment{
 
         Log.d("Counts", "counts[1] = " + counts[1] + ", counts[0] = " + counts[0]);
 
-        if (counts[0] == counts[1]){
+        if (counts[0] == counts[1]) {
             Context context = getActivity();
             CharSequence text = "All stamped";
             int duration = Toast.LENGTH_LONG;
@@ -116,37 +111,47 @@ public class PassFragment extends Fragment{
     }
 
     public void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
+                                 Intent data) {
         if (requestCode == CameraActivity.BARCODE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                String name = data.getStringExtra("name");
-                String email = data.getStringExtra("email");
-                String address = data.getStringExtra("address");
-                String company = data.getStringExtra("company");
-                String number = data.getStringExtra("number");
-                String url = data.getStringExtra("url");
-                VCard contactInfo = new VCard(name)
-                        .setEmail(email)
-                        .setAddress(address)
-                        .setCompany(company)
-                        .setPhoneNumber(number)
-                        .setWebsite(url);
+            switch (resultCode) {
+                case Activity.RESULT_OK: {
+                    String name = data.getStringExtra("name");
+                    String email = data.getStringExtra("email");
+                    String address = data.getStringExtra("address");
+                    String company = data.getStringExtra("company");
+                    String number = data.getStringExtra("number");
+                    String url = data.getStringExtra("url");
+                    VCard contactInfo = new VCard(name)
+                            .setEmail(email)
+                            .setAddress(address)
+                            .setCompany(company)
+                            .setPhoneNumber(number)
+                            .setWebsite(url);
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("name", name);
-                editor.putString("email", email);
-                editor.putString("address", address);
-                editor.putString("company", company);
-                editor.putString("number", number);
-                editor.putString("url", url);
-                editor.commit();
-                hasBarcode(contactInfo);
+                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("name", name);
+                    editor.putString("email", email);
+                    editor.putString("address", address);
+                    editor.putString("company", company);
+                    editor.putString("number", number);
+                    editor.putString("url", url);
+                    editor.commit();
+                    hasBarcode(contactInfo);
+                    break;
+                }
+                case Activity.RESULT_CANCELED: {
+                    Context context = getActivity();
+                    CharSequence text = "Wrong V-Card format";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
             }
         }
     }
 
-    private void getStampProgress(){
+    private void getStampProgress() {
         DatabaseReference ref = database.getReference("partners");
         final Context mContext = getContext();
         ref.addValueEventListener(new ValueEventListener() {
@@ -158,7 +163,7 @@ public class PassFragment extends Fragment{
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Stamp stamp = snapshot.getValue(Stamp.class);
-                    counts[0]+= 1;
+                    counts[0] += 1;
                     //if code is in sharedpreference
                     SharedPreferences sharedPref = mContext.getSharedPreferences("StampPref", Context.MODE_PRIVATE);
                     String savedCode = sharedPref.getString(stamp.getName(), null);
@@ -184,7 +189,7 @@ public class PassFragment extends Fragment{
 
     }
 
-    private void noBarcode (){
+    private void noBarcode() {
         ImageView myImage = getView().findViewById(R.id.my_qr);
         myImage.setImageDrawable(getResources().getDrawable(R.drawable.qr_code));
         final Button button = getView().findViewById(R.id.scan_button);
@@ -196,14 +201,14 @@ public class PassFragment extends Fragment{
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
                 intent.putExtra("requestCode", CameraActivity.BARCODE_REQUEST);
-                    startActivityForResult(
-                            intent,
-                            CameraActivity.BARCODE_REQUEST);
-                }
+                startActivityForResult(
+                        intent,
+                        CameraActivity.BARCODE_REQUEST);
+            }
         });
     }
 
-    private void hasBarcode (VCard contactInfo){
+    private void hasBarcode(VCard contactInfo) {
         //VCard contactInfo =
         TextView name = getView().findViewById(R.id.vcard_name);
         name.setText(contactInfo.getName());
@@ -236,7 +241,7 @@ public class PassFragment extends Fragment{
         });
     }
 
-    private void deleteQR(){
+    private void deleteQR() {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         //editor.remove(getString(R.string.myqr));
